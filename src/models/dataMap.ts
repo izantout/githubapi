@@ -1,0 +1,1 @@
+export type DataMap = Record<string, string | number>;

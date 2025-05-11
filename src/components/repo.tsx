@@ -1,5 +1,7 @@
 "use client";
 
+import { DataMap } from "@/models/dataMap";
+
 type RepoProp = {
   information: DataMap;
 };
