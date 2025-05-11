@@ -7,6 +7,7 @@ type Props = {
 };
 
 export default function CustomerComparison({ user1, user2 }: Props) {
+  console.log(user1);
   const data = [
     {
       data: "Public Repos",
@@ -14,14 +15,14 @@ export default function CustomerComparison({ user1, user2 }: Props) {
       user2: user2.public_repos,
     },
     {
-      data: "Commits",
-      user1: user1.public_repos,
-      user2: user2.public_repos,
+      data: "Followers",
+      user1: user1.followers,
+      user2: user2.followers,
     },
     {
-      data: "test",
-      user1: user1.public_repos,
-      user2: user2.public_repos,
+      data: "Following",
+      user1: user1.following,
+      user2: user2.following,
     },
     
   ];
@@ -56,7 +57,7 @@ export default function CustomerComparison({ user1, user2 }: Props) {
               <div className="w-full bg-[#30363d] h-4 rounded-full overflow-hidden">
                 <div
                   className="bg-[#238636] h-full"
-                  style={{ width: `${item.user1}*10%` }}
+                  style={{ width: `${item.user1}%` }}
                 />
               </div>
               <span className="text-sm">{item.user1}</span>
@@ -73,7 +74,7 @@ export default function CustomerComparison({ user1, user2 }: Props) {
               <div className="w-full bg-[#30363d] h-4 rounded-full overflow-hidden">
                 <div
                   className="bg-[#1f6feb] h-full"
-                  style={{ width: `${item.user2}*10%` }}
+                  style={{ width: `${item.user2}%` }}
                 />
               </div>
             </div>

@@ -58,7 +58,9 @@ export default function SearchPage() {
       setUser1(firstUser);
       setUser2(secondUser);
       setShowData(true);
-    } catch (err) {
+      setLoading(false);
+      setShowSearch(false)
+;    } catch (err) {
       console.log(err);
       alert(
         `ERROR: Fetch failed! Please make sure the username is written correctly`
@@ -81,7 +83,13 @@ export default function SearchPage() {
       {/* Tabs clicker */}
       <div className="flex space-x-2 rounded-lg p-1 w-fit">
         <button
-          onClick={() => setActiveTab("tab1")}
+          onClick={() => {
+            setShowData(false);
+            setShowSearch(true);
+            setInput("");
+            setInput2("");
+            setActiveTab("tab1");
+          }}
           className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
             activeTab === "tab1"
               ? "bg-white shadow text-blue-600 font-semibold"
@@ -91,7 +99,13 @@ export default function SearchPage() {
           Find user
         </button>
         <button
-          onClick={() => setActiveTab("tab2")}
+          onClick={() => {
+            setShowData(false);
+            setShowSearch(true);
+            setInput("");
+            setInput2("");
+            setActiveTab("tab2");
+          }}
           className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
             activeTab === "tab2"
               ? "bg-white shadow text-blue-600 font-semibold"
@@ -118,15 +132,15 @@ export default function SearchPage() {
 
             {showSearch && (
               <GeneralButton
-              text="Search"
-              onClick={() => handleSearch(input)}
+                text="Search"
+                onClick={() => handleSearch(input)}
               />
             )}
 
             {!showSearch && (
               <GeneralButton
-              text="New Search"
-              onClick={() => handleNewSearch()}
+                text="New Search"
+                onClick={() => handleNewSearch()}
               />
             )}
 

@@ -10,7 +10,9 @@ export default function Avatar({ src, alt = "User Avatar" }: AvatarProps) {
     <Image
       src={src}
       alt={alt}
-      className="w-40 h-40 rounded-full object-cover mb-2"
+      width={260}
+      height={260}
+      className="rounded-full object-cover mb-2"
     />
   );
 }
