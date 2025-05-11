@@ -1,1 +1,0 @@
-type DataMap = Record<string, string | number>;
