@@ -73,6 +73,7 @@ export default function SearchPage() {
 
   const handleNewSearch = () => {
     setInput("");
+    setInput2("");
     setShowSearch(true);
     setShowData(false);
     setLoading(false);
