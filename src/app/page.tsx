@@ -57,6 +57,7 @@ export default function SearchPage() {
 
       setUser1(firstUser);
       setUser2(secondUser);
+      setShowData(true);
     } catch (err) {
       console.log(err);
       alert(

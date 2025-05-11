@@ -69,7 +69,7 @@ export default function CustomerComparison({ user1, user2 }: Props) {
 
             {/* Company B Bar */}
             <div className="flex items-center justify-start gap-2">
-              <span className="text-sm">{item.user2}%</span>
+              <span className="text-sm">{item.user2}</span>
               <div className="w-full bg-[#30363d] h-4 rounded-full overflow-hidden">
                 <div
                   className="bg-[#1f6feb] h-full"
