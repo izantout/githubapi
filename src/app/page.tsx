@@ -8,47 +8,78 @@ import CustomerComparison from "@/components/comparison_table";
 import Avatar from "@/components/avatar";
 import GeneralButton from "@/components/generalButton";
 
+// Component for searching and comparing GitHub users
 export default function SearchPage() {
-  const [activeTab, setActiveTab] = useState("tab1");
+  const [activeTab, setActiveTab] = useState("tab1"); // Tracks current active tab
   const apiHandler = new APIHandler();
+
+  // Input fields for usernames
   const [input, setInput] = useState("");
   const [input2, setInput2] = useState("");
+
+  // UI and loading state management
   const [loading, setLoading] = useState(false);
-  const [user1, setUser1] = useState<Record<string, string | number>>({});
-  const [user2, setUser2] = useState<Record<string, string | number>>({});
-  const [genData, setGenData] = useState<Record<string, string | number>>({});
-  const [repData, setRepData] = useState<Record<string, string | number>[]>([]);
-  const [showAICompare, setShowAICompare] = useState(false);
-  const [AIOutput, setOutput] = useState("");
-  const [AILoading, setAILoading] = useState(false);
-  const [AIData, setAIData] = useState(false);
   const [showData, setShowData] = useState(false);
   const [showSearch, setShowSearch] = useState(true);
+  const [showAICompare, setShowAICompare] = useState(false);
+  const [AILoading, setAILoading] = useState(false);
+  const [AIData, setAIData] = useState(false);
 
+  // Data for displaying user and repo info
+  const [genData, setGenData] = useState<Record<string, string | number>>({});
+  const [repData, setRepData] = useState<Record<string, string | number>[]>([]);
+  const [user1, setUser1] = useState<Record<string, string | number>>({});
+  const [user2, setUser2] = useState<Record<string, string | number>>({});
+  const [AIOutput, setOutput] = useState("");
+
+  // Fetch and display data for a single user
   const handleSearch = async (username: string) => {
     setLoading(true);
     try {
-      const generalMap: Record<string, string | number> =
-        await apiHandler.searchForUser(username);
+      const generalMap = await apiHandler.searchForUser(username);
       setGenData(generalMap);
 
-      const repoMap: Record<string, string | number>[] =
-        await apiHandler.getRepos(generalMap);
+      const repoMap = await apiHandler.getRepos(generalMap);
       setRepData(repoMap);
 
       setShowData(true);
       setShowSearch(false);
-      setLoading(false);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       alert(
-        `ERROR: Fetch failed! Please make sure the username is written correctly`
+        "ERROR: Fetch failed! Please make sure the username is written correctly"
       );
       setInput("");
+    } finally {
       setLoading(false);
     }
   };
 
+  // Fetch and display data for comparing two users
+  const handleCompare = async (username1: string, username2: string) => {
+    setLoading(true);
+    try {
+      const firstUser = await apiHandler.searchForUser(username1);
+      const secondUser = await apiHandler.searchForUser(username2);
+
+      setUser1(firstUser);
+      setUser2(secondUser);
+      setShowData(true);
+      setShowAICompare(true);
+      setShowSearch(false);
+    } catch (err) {
+      console.error(err);
+      alert(
+        "ERROR: Fetch failed! Please make sure the username is written correctly"
+      );
+      setInput("");
+      setInput2("");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initiates AI-based comparison of two users
   const handleAICompare = async (
     user1: Record<string, string | number>,
     user2: Record<string, string | number>
@@ -68,56 +99,30 @@ export default function SearchPage() {
       });
 
       const data = await res.json();
-
       console.log("Compare API response:", data);
 
       if (!res.ok) {
         alert(`Error: ${data.error}`);
-        setAILoading(false);
         return;
       }
 
-      setOutput(data.message || "No output from model.");
-      setAILoading(false);
+      const formatted = apiHandler.beautifyLLMResponse(data.message);
+      setOutput(formatted || "No output from model.");
       setAIData(true);
     } catch (err) {
       console.error("Request failed:", err);
       alert("Something went wrong while contacting the AI.");
+    } finally {
       setAILoading(false);
     }
   };
 
-  const handleCompare = async (username1: string, username2: string) => {
-    setLoading(true);
-    try {
-      const firstUser: Record<string, string | number> =
-        await apiHandler.searchForUser(username1);
-      const secondUser: Record<string, string | number> =
-        await apiHandler.searchForUser(username2);
-
-      setUser1(firstUser);
-      setUser2(secondUser);
-      setShowData(true);
-      setShowAICompare(true);
-      setLoading(false);
-      setShowSearch(false);
-    } catch (err) {
-      console.log(err);
-      alert(
-        `ERROR: Fetch failed! Please make sure the username is written correctly`
-      );
-      setInput("");
-      setInput2("");
-      setLoading(false);
-    }
-  };
-
+  // Reset state for a new search
   const handleNewSearch = () => {
     setInput("");
     setInput2("");
     setShowSearch(true);
     setShowData(false);
-    setLoading(false);
     setAIData(false);
     setAILoading(false);
     setShowAICompare(false);
@@ -171,6 +176,7 @@ export default function SearchPage() {
         {/* Tab 1 Find user */}
         {activeTab === "tab1" && (
           <div className="flex flex-col items-center justify-center min-h-screen space-y-6 bg-gray-100 px-4 p-10">
+            {/* Username input field */}
             {showSearch && (
               <input
                 type="text"
@@ -181,6 +187,7 @@ export default function SearchPage() {
               />
             )}
 
+            {/* Search button */}
             {showSearch && (
               <GeneralButton
                 text="Search"
@@ -188,6 +195,7 @@ export default function SearchPage() {
               />
             )}
 
+            {/* New Search button */}
             {!showSearch && (
               <GeneralButton
                 text="New Search"
@@ -195,23 +203,33 @@ export default function SearchPage() {
               />
             )}
 
+            {/* Main Data Block */}
             {showData && (
               <div className="w-full max-w-6xl mx-auto bg-[#0D0F14] rounded-2xl shadow-lg overflow-hidden p-6 md:p-10 space-y-6 text-white">
                 <div className="flex flex-col md:flex-row gap-10">
                   <div className="flex flex-col items-center md:items-start text-center md:text-left space-y-4 md:w-1/3">
+                    {/* Picture */}
                     <Avatar
                       src={genData.avatar_url as string}
                       alt="User Avatar"
                     />
+                    {/* Name and Username */}
                     <div>
                       <p className="text-2xl font-bold">{genData.name}</p>
                       <p className="text-gray-400 text-lg">{genData.login}</p>
                     </div>
+
+                    {/* Bio */}
                     <p className="text-gray-300 text-sm">{genData.bio}</p>
 
+                    {/* Followers + Following + Public Repo */}
                     <div className="flex flex-wrap gap-2 justify-center md:justify-start text-sm text-gray-300">
                       <div className="flex items-center space-x-1">
+
+                        {/* Logo */}
                         <Users className="w-4 h-4 text-gray-400" />
+
+                        {/* Followers */}
                         <a
                           href={String(genData.followers_url)}
                           target="_blank"
@@ -222,6 +240,8 @@ export default function SearchPage() {
                         </a>
                         <span>followers</span>
                       </div>
+
+                      {/* Following */}
                       <div className="flex items-center space-x-1">
                         <a
                           href={String(genData.following_url)}
@@ -233,6 +253,8 @@ export default function SearchPage() {
                         </a>
                         <span>following</span>
                       </div>
+
+                      {/* Public Repos */}
                       <div className="flex items-center space-x-1">
                         <a
                           href={String(genData.repos_url)}
@@ -247,6 +269,7 @@ export default function SearchPage() {
                     </div>
                   </div>
 
+                  {/* All public repos */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:w-[80%] overflow-y-auto max-h-[70vh] pr-2">
                     {repData.map((item, index) => (
                       <Repo key={index} information={item} />
@@ -256,14 +279,18 @@ export default function SearchPage() {
               </div>
             )}
 
+            {/* Loading Icon */}
             {loading && (
               <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-blue-600" />
             )}
           </div>
         )}
+
         {/* Tab 2 Compare users */}
         {activeTab === "tab2" && (
           <div className="flex flex-col items-center justify-center min-h-screen space-y-6 bg-gray-100 px-4 p-10">
+            
+            {/* Username 1 Input */}
             {showSearch && (
               <input
                 type="text"
@@ -274,6 +301,7 @@ export default function SearchPage() {
               />
             )}
 
+            {/* Username 2 Input */}
             {showSearch && (
               <input
                 type="text"
@@ -284,6 +312,7 @@ export default function SearchPage() {
               />
             )}
 
+            {/* Compare Button */}
             {showSearch && (
               <GeneralButton
                 text="Compare"
@@ -291,6 +320,7 @@ export default function SearchPage() {
               />
             )}
 
+            {/* New Search Button */}
             {!showSearch && (
               <GeneralButton
                 text="New Search"
@@ -298,6 +328,7 @@ export default function SearchPage() {
               />
             )}
 
+            {/* AI Compare Button */}
             {showAICompare && (
               <GeneralButton
                 text="AI Compare"
@@ -310,17 +341,27 @@ export default function SearchPage() {
               />
             )}
 
+            {/* AI result Note */}
             {AILoading && (
               <div className="flex flex-col items-center space-y-4 mt-4">
                 <p className="text-center text-sm text-gray-600">
-                  Please wait — I&apos;m using a free AI model. It can take
-                  between 1 and 3 minutes.
+                  Please wait! I&apos;m using a free AI model. It can take
+                  between 1 and 3 minutes. If it fails, its because of vercel
+                  time constraint of 60 seconds. Please try again for it to
+                  work!
                 </p>
                 <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-blue-600" />
               </div>
             )}
-            {AIData && <div className="text-black">{AIOutput}</div>}
 
+            {/* AI Data Section */}
+            {AIData && (
+              <div className="text-black whitespace-pre-line font-mono text-sm">
+                {AIOutput}
+              </div>
+            )}
+
+            {/* User Comparison Section */}
             {showData && <CustomerComparison user1={user1} user2={user2} />}
           </div>
         )}

@@ -6,6 +6,7 @@ type Props = {
   user2: Record<string, string | number>;
 };
 
+// Comparison table ro comapre 2 users
 export default function CustomerComparison({ user1, user2 }: Props) {
   console.log(user1);
   const data = [
@@ -35,24 +36,32 @@ export default function CustomerComparison({ user1, user2 }: Props) {
       {/* Top Section - Avatars and Names */}
       <div className="grid grid-cols-2 gap-8 items-center mb-10">
         <div className="flex flex-col items-center">
+
+          {/* Picture */}
           <Avatar src={user1.avatar_url as string} alt="User 1 Avatar" />
+
+          {/* Name */}
           <span className="text-lg font-semibold text-center">
             {user1.name}
           </span>
         </div>
         <div className="flex flex-col items-center">
+
+          {/* Picture */}
           <Avatar src={user2.avatar_url as string} alt="User 2 Avatar" />
+
+          {/* Name */}
           <span className="text-lg font-semibold text-center">
             {user2.name}
           </span>
         </div>
       </div>
 
-      {/* Bottom Section - Yearly Data Comparison */}
+      {/* Bottom Section - Data comparison */}
       <div className="grid grid-cols-3 gap-6 text-sm font-medium">
         {data.map((item) => (
           <React.Fragment key={item.data}>
-            {/* Company A Bar */}
+            {/* User1 Bar */}
             <div className="flex items-center justify-end gap-2">
               <div className="w-full bg-[#30363d] h-4 rounded-full overflow-hidden">
                 <div
@@ -63,12 +72,12 @@ export default function CustomerComparison({ user1, user2 }: Props) {
               <span className="text-sm">{item.user1}</span>
             </div>
 
-            {/* Year */}
+            {/* Data */}
             <div className="flex items-center justify-center text-white font-semibold">
               {item.data}
             </div>
 
-            {/* Company B Bar */}
+            {/* User2 Bar */}
             <div className="flex items-center justify-start gap-2">
               <span className="text-sm">{item.user2}</span>
               <div className="w-full bg-[#30363d] h-4 rounded-full overflow-hidden">

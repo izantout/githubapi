@@ -3,6 +3,7 @@ type ButtonProps = {
   onClick: () => void;
 };
 
+// General button used in app
 export default function GeneralButton({ text, onClick }: ButtonProps) {
   return (
     <button

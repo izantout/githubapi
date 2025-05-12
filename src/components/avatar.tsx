@@ -5,6 +5,7 @@ type AvatarProps = {
   alt?: string;
 };
 
+// General circle avatar for image
 export default function Avatar({ src, alt = "User Avatar" }: AvatarProps) {
   return (
     <Image
