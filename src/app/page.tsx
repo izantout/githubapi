@@ -17,9 +17,11 @@ export default function SearchPage() {
   const [user1, setUser1] = useState<Record<string, string | number>>({});
   const [user2, setUser2] = useState<Record<string, string | number>>({});
   const [genData, setGenData] = useState<Record<string, string | number>>({});
-  const [repoData, setRepoData] = useState<Record<string, string | number>[]>(
-    []
-  );
+  const [repData, setRepData] = useState<Record<string, string | number>[]>([]);
+  const [showAICompare, setShowAICompare] = useState(false);
+  const [AIOutput, setOutput] = useState("");
+  const [AILoading, setAILoading] = useState(false);
+  const [AIData, setAIData] = useState(false);
   const [showData, setShowData] = useState(false);
   const [showSearch, setShowSearch] = useState(true);
 
@@ -32,7 +34,7 @@ export default function SearchPage() {
 
       const repoMap: Record<string, string | number>[] =
         await apiHandler.getRepos(generalMap);
-      setRepoData(repoMap);
+      setRepData(repoMap);
 
       setShowData(true);
       setShowSearch(false);
@@ -47,6 +49,44 @@ export default function SearchPage() {
     }
   };
 
+  const handleAICompare = async (
+    user1: Record<string, string | number>,
+    user2: Record<string, string | number>
+  ) => {
+    const prompt =
+      "Please compare these 2 users and give me a summary of their profile. Please go into their repos and calculate the commit frequency. Please make the comparison easy to read on a readers eye";
+
+    const formData = new FormData();
+    formData.append("user1", JSON.stringify(user1));
+    formData.append("user2", JSON.stringify(user2));
+    formData.append("prompt", prompt);
+
+    try {
+      const res = await fetch("/api/hf?type=compare", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      console.log("Compare API response:", data);
+
+      if (!res.ok) {
+        alert(`Error: ${data.error}`);
+        setAILoading(false);
+        return;
+      }
+
+      setOutput(data.message || "No output from model.");
+      setAILoading(false);
+      setAIData(true);
+    } catch (err) {
+      console.error("Request failed:", err);
+      alert("Something went wrong while contacting the AI.");
+      setAILoading(false);
+    }
+  };
+
   const handleCompare = async (username1: string, username2: string) => {
     setLoading(true);
     try {
@@ -58,9 +98,10 @@ export default function SearchPage() {
       setUser1(firstUser);
       setUser2(secondUser);
       setShowData(true);
+      setShowAICompare(true);
       setLoading(false);
-      setShowSearch(false)
-;    } catch (err) {
+      setShowSearch(false);
+    } catch (err) {
       console.log(err);
       alert(
         `ERROR: Fetch failed! Please make sure the username is written correctly`
@@ -73,10 +114,13 @@ export default function SearchPage() {
 
   const handleNewSearch = () => {
     setInput("");
-    setInput2(""); 
+    setInput2("");
     setShowSearch(true);
     setShowData(false);
     setLoading(false);
+    setAIData(false);
+    setAILoading(false);
+    setShowAICompare(false);
   };
 
   return (
@@ -89,6 +133,9 @@ export default function SearchPage() {
             setShowSearch(true);
             setInput("");
             setInput2("");
+            setAIData(false);
+            setAILoading(false);
+            setShowAICompare(false);
             setActiveTab("tab1");
           }}
           className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
@@ -105,6 +152,9 @@ export default function SearchPage() {
             setShowSearch(true);
             setInput("");
             setInput2("");
+            setAIData(false);
+            setAILoading(false);
+            setShowAICompare(false);
             setActiveTab("tab2");
           }}
           className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
@@ -198,7 +248,7 @@ export default function SearchPage() {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:w-[80%] overflow-y-auto max-h-[70vh] pr-2">
-                    {repoData.map((item, index) => (
+                    {repData.map((item, index) => (
                       <Repo key={index} information={item} />
                     ))}
                   </div>
@@ -247,6 +297,29 @@ export default function SearchPage() {
                 onClick={() => handleNewSearch()}
               />
             )}
+
+            {showAICompare && (
+              <GeneralButton
+                text="AI Compare"
+                onClick={() => {
+                  setShowData(false);
+                  setShowAICompare(false);
+                  setAILoading(true);
+                  handleAICompare(user1, user2);
+                }}
+              />
+            )}
+
+            {AILoading && (
+              <div className="flex flex-col items-center space-y-4 mt-4">
+                <p className="text-center text-sm text-gray-600">
+                  Please wait — I&apos;m using a free AI model. It can take
+                  between 1 and 3 minutes.
+                </p>
+                <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-b-4 border-blue-600" />
+              </div>
+            )}
+            {AIData && <div className="text-black">{AIOutput}</div>}
 
             {showData && <CustomerComparison user1={user1} user2={user2} />}
           </div>
