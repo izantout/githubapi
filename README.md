@@ -43,7 +43,7 @@ A web app that allows you to **search and compare GitHub user profiles**, comple
 
 ## 🌐 Live Demo
 
-**[Check it out on Vercel](https://your-vercel-site.vercel.app/)**  
+**[Check it out on Vercel](githubapi-smarterai.vercel.app)**  
 
 ---
 
