@@ -1,37 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🔍 GitHub Profile Explorer
 
-## Getting Started
+A web app that allows you to **search and compare GitHub user profiles**, complete with **AI-powered profile summarization** using Hugging Face. Built with **Next.js**, **React**, **TypeScript**, **JavaScript**, **Tailwind CSS**, and deployed on **Vercel**.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 🔎 Search GitHub Users
+- Enter any GitHub username to retrieve:
+  - Profile details (name, bio, avatar)
+  - Number of followers and following
+  - List of public repositories
+  - Direct links to each public repo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 👥 Compare Two Users
+- Input two GitHub usernames to see a side-by-side comparison of:
+  - Profile statistics
+  - Repo counts
+  - Activity overview
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🧠 AI-Powered Analysis
+- Get a summary of two users using:
+  - Hugging Face's free-tier inference API
+  - Commit frequency and other activity patterns
+  - Highlighted strengths and comparisons
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🧰 Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Tech            | Purpose                             |
+|-----------------|-------------------------------------|
+| **Next.js**     | Framework for React-based web apps  |
+| **React**       | UI library                          |
+| **TypeScript**  | Type-safe JavaScript                |
+| **JavaScript**  | Core application logic              |
+| **Tailwind CSS**| UI Styling                          |
+| **Vercel**      | Hosting and deployment              |
+| **Hugging Face**| AI summarization and NLP tasks      |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🌐 Live Demo
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**[Check it out on Vercel](https://your-vercel-site.vercel.app/)**  
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# githubapi-smarterai
+---
+
+## 🤖 AI Limitations
+
+> This project uses Hugging Face's **free-tier inference**, which comes with limited monthly credits. If you're seeing API limit errors, you may need to wait until my/your credits reset or upgrade your plan.
